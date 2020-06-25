@@ -13,10 +13,13 @@ RE_multispace = RE_multispace = re.compile(r"\s+")
 def parse_event(fe):
     parsed = []
     events_summary = fe.readline()
-    num_particles = int(events_summary.strip().split(" ")[0])
+    events_summary_fields = RE_multispace.split(events_summary.strip())
+    num_particles = int(events_summary_fields[0])
+    event_weight = float(events_summary_fields[2])
     for _ in range(num_particles):
         line = fe.readline()
         event_line = re.sub(RE_multispace, "\t", line.strip()).split("\t")
+        event_line.append(event_weight)
         parsed.append(np.array(event_line, dtype=np.float64))
     while True:
         line = fe.readline()
@@ -39,3 +42,8 @@ def lhe_iter(path):
                 i += 1
                 event_parsed = parse_event(raw_e)
                 yield event_parsed
+
+
+def lhe_iter_chain(paths):
+    for p in paths:
+        yield from lhe_iter(p)

@@ -7,4 +7,4 @@ setup(name="mc-utils",
       author="Victor Ananyev",
       author_email="vindex10@gmail.com",
       packages=["mc_utils"],
-      install_requires=["numpy==1.16.*"])
+      install_requires=["numpy==1.19.*"])

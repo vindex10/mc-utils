@@ -6,7 +6,7 @@ find_package(Python3 COMPONENTS Interpreter Development)
 
 add_library(fastlhe SHARED fastlhe.cpp)
 
-execute_process(COMMAND "${Python3_EXECUTABLE}-config" "--extension-suffix"
+execute_process(COMMAND "${Python3_EXECUTABLE}" "-c" "import distutils; from distutils import sysconfig; print(distutils.sysconfig.get_config_var('SOABI'))"
                 OUTPUT_VARIABLE "Python3_SOABI")
 string(STRIP "${Python3_SOABI}" "Python3_SOABI")
 
@@ -16,7 +16,7 @@ string(STRIP "${pybind11_includes}" pybind11_includes)
 
 set_target_properties(fastlhe PROPERTIES PREFIX "")
 set_target_properties(fastlhe PROPERTIES OUTPUT_NAME "fastlhe")
-set_target_properties(fastlhe PROPERTIES SUFFIX "${Python3_SOABI}")
+set_target_properties(fastlhe PROPERTIES SUFFIX ".${Python3_SOABI}.so")
 separate_arguments(pybind11_includes)
 target_compile_options(fastlhe PRIVATE ${pybind11_includes})
 

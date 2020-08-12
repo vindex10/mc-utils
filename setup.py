@@ -64,4 +64,4 @@ setup(name="mc-utils",
       cmdclass={
           "build_ext": cmake_build_ext
       },
-      install_requires=["numpy==1.19.*"])
+      install_requires=["numpy==1.19.*", "pybind11==2.*"])

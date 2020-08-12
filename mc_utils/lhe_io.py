@@ -3,6 +3,8 @@ import logging
 import re
 import zlib
 
+from itertools import chain
+
 from mc_utils.fastlhe import parse_batch
 
 try:
@@ -69,14 +71,19 @@ def _parse_event_batch(buf, event_batch, event_postprocess=None):
     return arr, buf
 
 
-def lhe_iter_file(path, chunksize=100000000, gzipped=None, event_postprocess=None):
-    is_root = path.startswith("root://")
-    is_gzip = (path.endswith(".gz") and gzipped is None) or gzipped
+def lhe_iter_files(paths, chunksize=100000000, gzipped=None, event_postprocess=None):
+    if not isinstance(paths, list):
+        yield from lhe_iter_files([paths], chunksize, gzipped, event_postprocess)
+        return
 
-    f_iterator = _iter_xrootd if is_root else _iter_file
-    raw_event_chunks = _skip_preamble(f_iterator(path, chunksize, is_gzip))
+    is_root = [path.startswith("root://") for path in paths]
+    is_gzip = [((path.endswith(".gz") and gzipped is None) or gzipped) for path in paths]
+
+    f_iterator = [(_iter_xrootd if i_is_root else _iter_file) for i_is_root in is_root]
+    raw_event_chunks = (i_f_iterator(path, chunksize, i_is_gzip) for
+                        i_f_iterator, path, i_is_gzip in zip(f_iterator, paths, is_gzip))
     buf = ""
-    for raw_event_chunk in raw_event_chunks:
+    for raw_event_chunk in chain.from_iterable(raw_event_chunks):
         logger.debug("Got chunk. Start parsing batch")
         arr, buf = _parse_event_batch(buf, raw_event_chunk, event_postprocess)
         yield arr

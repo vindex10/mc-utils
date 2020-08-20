@@ -17,3 +17,7 @@ def phiorth_a(p1, p2, a):
 
 def cos_a(p, a):
     return np.sum(p*a, axis=1)/np.linalg.norm(p, axis=1)/np.linalg.norm(a, axis=1)
+
+
+def cos_diff(th1, th2, phi):
+    return np.cos(th1)*np.cos(th2) + np.sin(th1)*np.sin(th2)*np.cos(phi)

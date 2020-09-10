@@ -16,8 +16,6 @@ except ModuleNotFoundError:
 
 logger = logging.getLogger("mc_utils.lhe_io")
 
-NUM_PROCESSES = 6
-
 EVENT_START_MARKER = b"<event"
 EVENT_END_MARKER = b"</event>\n"
 EVENT_END_MARKER_LEN = len(EVENT_END_MARKER)

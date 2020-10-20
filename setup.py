@@ -2,7 +2,7 @@ import os
 import sys
 import subprocess
 
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
 
 
@@ -59,7 +59,7 @@ setup(name="mc-utils",
       url="https://github.com/vindex10/mc-utils",
       author="Victor Ananyev",
       author_email="vindex10@gmail.com",
-      packages=["mc_utils"],
+      packages=find_packages(),
       ext_modules=[CMakeExtension("mc_utils.fastlhe", "src/")],
       cmdclass={
           "build_ext": cmake_build_ext
